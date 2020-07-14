@@ -53,6 +53,16 @@ abstract class Enum
         throw new \BadMethodCallException("Method $name does not exist");
     }
 
+    public static function isValidValue($value): bool
+    {
+        return in_array($value, static::getStates());
+    }
+
+    public static function isValidKey(string $key): bool
+    {
+        return array_key_exists($key, static::getStates());
+    }
+
     public static function values(): array
     {
         return array_values(static::getStates());
