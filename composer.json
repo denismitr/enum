@@ -1,0 +1,41 @@
+{
+    "name": "denismitr/enum",
+    "description": "PHP Enum",
+    "keywords": ["enum", "enums", "enumerable"],
+    "homepage": "https://github.com/denismitr/enum",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Denis Mitrofanov",
+            "email": "denis.mitr@gmail.com"
+        }
+    ],
+    "require": {
+        "php": "^7.2",
+        "ext-json": "*"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^8.0"
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "autoload": {
+        "psr-4": {
+            "Denismitr\\Enum\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Denismitr\\Enum\\Tests\\": "tests"
+        }
+    },
+    "scripts": {
+        "test": "vendor/bin/phpunit --colors=always",
+        "test-coverage": "vendor/bin/phpunit --coverage-html coverage"
+    },
+    "support": {
+        "issues": "https://github.com/denismitr/enum/issues",
+        "source": "https://github.com/denismitr/enum"
+    }
+}
