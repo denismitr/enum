@@ -20,15 +20,9 @@ abstract class Enum
             throw new InvalidArgumentException("Invalid enum value {$value}");
         }
 
-        $keys = array_flip($states);
-
-        if ( ! array_key_exists($value, $keys)) {
-            throw new InvalidArgumentException("Invalid enum value {$value}");
-        }
-
         $this->states = $states;
         $this->value = $value;
-        $this->key = $keys[$value];
+        $this->key = $key;
     }
 
     public static function __callStatic($name, $arguments)
@@ -42,6 +36,21 @@ abstract class Enum
         $value = $states[$name];
 
         return new static($value, $name, $states);
+    }
+
+    public function __call($name, $arguments)
+    {
+        if (strpos($name, 'is') === 0) {
+            $key = strtoupper(str_replace('is', '', $name));
+
+            if ( ! array_key_exists($key, $this->states)) {
+                throw new InvalidArgumentException("Invalid enum state {$key}");
+            }
+
+            return $this->key === $key;
+        }
+
+        throw new \BadMethodCallException("Method $name does not exist");
     }
 
     public static function values(): array
