@@ -27,7 +27,7 @@ class OrderStatus extends Enum
             'PENDING' => 1,
             'COMPLETED' => 2,
             'CANCELED' => 3,
-            'DELIVERING' => 4,
+            'BEING_DELIVERING' => 4,
         ];
     }
 }

@@ -8,18 +8,15 @@ namespace Denismitr\Enum\Tests\Stubs;
 use Denismitr\Enum\Enum;
 
 /**
- * Class OrderStatus
- * @package Denismitr\Enum\Tests\Stubs
- *
  * @method static OrderStatus PENDING
  * @method static OrderStatus COMPLETED
  * @method static OrderStatus CANCELED
- * @method static OrderStatus DELIVERING
+ * @method static OrderStatus BEING_DELIVERED
  *
  * @method bool isPending()
  * @method bool isCompleted()
  * @method bool isCanceled()
- * @method bool isDelivering()
+ * @method bool isBeingDelivered()
  */
 class OrderStatus extends Enum
 {
@@ -29,7 +26,7 @@ class OrderStatus extends Enum
             'PENDING' => 1,
             'COMPLETED' => 2,
             'CANCELED' => 3,
-            'DELIVERING' => 4,
+            'BEING_DELIVERED' => 4,
         ];
     }
 }

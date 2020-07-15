@@ -11,6 +11,7 @@ abstract class Enum
     protected $value;
     protected $key;
     protected $states = [];
+    protected $checkMethod;
 
     protected abstract static function getStates(): array;
 
@@ -30,7 +31,7 @@ abstract class Enum
         $states = static::getStates();
 
         if ( ! array_key_exists($name, $states)) {
-            throw new InvalidArgumentException("Invalid state {$name}");
+            throw new \Exception("Attempt to initialize enum with Invalid state {$name}");
         }
 
         $value = $states[$name];
@@ -41,16 +42,14 @@ abstract class Enum
     public function __call($name, $arguments)
     {
         if (strpos($name, 'is') === 0) {
-            $key = strtoupper(str_replace('is', '', $name));
-
-            if ( ! array_key_exists($key, $this->states)) {
-                throw new InvalidArgumentException("Invalid enum state {$key}");
+            if ($this->checkMethod === null) {
+                $this->generateCheckMethod();
             }
 
-            return $this->key === $key;
+            return $name === $this->checkMethod;
         }
 
-        throw new \BadMethodCallException("Method $name does not exist");
+        throw new \Exception("Method {$name} does not exist");
     }
 
     public static function isValidValue($value): bool
@@ -63,26 +62,33 @@ abstract class Enum
         return array_key_exists($key, static::getStates());
     }
 
-    public static function values(): array
+    public static function values(Enum ...$except): array
     {
-        return array_values(static::getStates());
-    }
-
-    /**
-     * @param string[]
-     * @return string[]
-     */
-    public static function keys(array $except = []): array
-    {
-        $keys = [];
-
-        foreach (static::getStates() as $key=>$value) {
-            if ( ! in_array($key, $except)) {
-                $keys[] = $key;
-            }
+        $values = array_values(static::getStates());
+        if (\count($except) === 0) {
+            return $values;
         }
 
-        return $keys;
+        $exceptValues = array_map(function($enum) {
+            return $enum->value();
+        }, $except);
+
+        return array_values(array_diff($values, $exceptValues));
+    }
+
+    public static function keys(Enum ...$except): array
+    {
+        $keys = array_keys(static::getStates());
+
+        if (\count($except) === 0) {
+            return $keys;
+        }
+
+        $exceptKeys = array_map(function($enum) {
+            return $enum->key();
+        }, $except);
+
+        return array_values(array_diff($keys, $exceptKeys));
     }
 
     /**
@@ -96,5 +102,12 @@ abstract class Enum
     public function key(): string
     {
         return $this->key;
+    }
+
+    protected function generateCheckMethod()
+    {
+        $this->checkMethod = 'is' . str_replace(' ', '', ucwords(
+            str_replace('_', ' ', strtolower($this->key))
+        ));
     }
 }

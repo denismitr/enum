@@ -39,12 +39,12 @@ class EnumTest extends TestCase
         $this->assertFalse($canceled->isPending());
         $this->assertFalse($canceled->isCompleted());
 
-        $delivering = OrderStatus::DELIVERING();
+        $delivering = OrderStatus::BEING_DELIVERED();
 
         $this->assertInstanceOf(OrderStatus::class, $delivering);
         $this->assertEquals(4, $delivering->value());
-        $this->assertEquals('DELIVERING', $delivering->key());
-        $this->assertTrue($delivering->isDelivering());
+        $this->assertEquals('BEING_DELIVERED', $delivering->key());
+        $this->assertTrue($delivering->isBeingDelivered());
         $this->assertFalse($delivering->isPending());
         $this->assertFalse($delivering->isCompleted());
         $this->assertFalse($delivering->isCanceled());
@@ -53,7 +53,7 @@ class EnumTest extends TestCase
     /**
      * @test
      */
-    public function it_provides_static_information()
+    public function it_provides_static_validation()
     {
         $this->assertTrue(OrderStatus::isValidKey('PENDING'));
         $this->assertTrue(OrderStatus::isValidValue(1));
@@ -64,7 +64,38 @@ class EnumTest extends TestCase
         $this->assertTrue(OrderStatus::isValidKey('CANCELED'));
         $this->assertTrue(OrderStatus::isValidValue(3));
 
-        $this->assertTrue(OrderStatus::isValidKey('DELIVERING'));
+        $this->assertTrue(OrderStatus::isValidKey('BEING_DELIVERED'));
         $this->assertTrue(OrderStatus::isValidValue(4));
+
+        $this->assertFalse(OrderStatus::isValidKey('FOO'));
+        $this->assertFalse(OrderStatus::isValidValue(5));
+    }
+
+    /**
+     * @test
+     */
+    public function it_provides_static_information()
+    {
+        $keys = OrderStatus::keys();
+        $keysExceptSome = OrderStatus::keys(OrderStatus::PENDING(), OrderStatus::CANCELED());
+
+        $values = OrderStatus::values();
+        $valuesExceptSome = OrderStatus::values(OrderStatus::PENDING(), OrderStatus::CANCELED());
+
+
+        $this->assertEquals(['PENDING', 'COMPLETED', 'CANCELED', 'BEING_DELIVERED'], $keys);
+        $this->assertEquals(['COMPLETED', 'BEING_DELIVERED'], $keysExceptSome);
+
+        $this->assertEquals([1,2,3,4], $values);
+        $this->assertEquals([2,4], $valuesExceptSome);
+    }
+
+    /**
+     * @test
+     */
+    public function it_throws_on_invalid_initialization()
+    {
+        $this->expectException(\Exception::class);
+        OrderStatus::FOO();
     }
 }
