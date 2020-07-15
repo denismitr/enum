@@ -53,6 +53,21 @@ class EnumTest extends TestCase
     /**
      * @test
      */
+    public function it_can_enumerate_itself()
+    {
+        $enumerate = OrderStatus::enumerate();
+
+        $this->assertEquals([
+            'PENDING' => 1,
+            'COMPLETED' => 2,
+            'CANCELED' => 3,
+            'BEING_DELIVERED' => 4,
+        ], $enumerate);
+    }
+
+    /**
+     * @test
+     */
     public function it_provides_static_validation()
     {
         $this->assertTrue(OrderStatus::isValidKey('PENDING'));

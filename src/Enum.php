@@ -13,8 +13,6 @@ abstract class Enum
     protected $states = [];
     protected $checkMethod;
 
-    protected abstract static function getStates(): array;
-
     protected function __construct($value, string $key, array $states)
     {
         if ( ! \in_array($value, $states)) {
@@ -26,9 +24,11 @@ abstract class Enum
         $this->key = $key;
     }
 
+    public abstract static function enumerate(): array;
+
     public static function __callStatic($name, $arguments)
     {
-        $states = static::getStates();
+        $states = static::enumerate();
 
         if ( ! array_key_exists($name, $states)) {
             throw new \Exception("Attempt to initialize enum with Invalid state {$name}");
@@ -54,17 +54,17 @@ abstract class Enum
 
     public static function isValidValue($value): bool
     {
-        return in_array($value, static::getStates());
+        return in_array($value, static::enumerate());
     }
 
     public static function isValidKey(string $key): bool
     {
-        return array_key_exists($key, static::getStates());
+        return array_key_exists($key, static::enumerate());
     }
 
     public static function values(Enum ...$except): array
     {
-        $values = array_values(static::getStates());
+        $values = array_values(static::enumerate());
         if (\count($except) === 0) {
             return $values;
         }
@@ -78,7 +78,7 @@ abstract class Enum
 
     public static function keys(Enum ...$except): array
     {
-        $keys = array_keys(static::getStates());
+        $keys = array_keys(static::enumerate());
 
         if (\count($except) === 0) {
             return $keys;

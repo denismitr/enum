@@ -20,7 +20,7 @@ use Denismitr\Enum\Enum;
  */
 class OrderStatus extends Enum
 {
-    protected static function getStates(): array
+    public static function enumerate(): array
     {
         return [
             'PENDING' => 1,

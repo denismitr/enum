@@ -1,5 +1,6 @@
 composer.lock
 vendor
 coverage
+reports
 .phpunit.result.cache
 .idea/
