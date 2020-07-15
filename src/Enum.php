@@ -10,22 +10,48 @@ abstract class Enum
 {
     protected $value;
     protected $key;
-    protected $states = [];
     protected $checkMethod;
 
-    protected function __construct($value, string $key, array $states)
+    protected function __construct($value, string $key)
     {
-        if ( ! \in_array($value, $states)) {
-            throw new InvalidArgumentException("Invalid enum value {$value}");
-        }
-
-        $this->states = $states;
         $this->value = $value;
         $this->key = $key;
     }
 
+    /**
+     * @param string $key
+     * @return static
+     */
+    public static function fromKey(string $key)
+    {
+        return static::$key();
+    }
+
+    /**
+     * @param mixed $value
+     * @return static
+     */
+    public static function fromValue($value)
+    {
+        $enumerate = static::enumerate();
+
+        foreach ($enumerate as $k=>$v) {
+            if ($value === $v) {
+                return new static($value, $k);
+            }
+        }
+
+        throw new InvalidArgumentException("Invalid value {$value}");
+    }
+
     public abstract static function enumerate(): array;
 
+    /**
+     * @param string $name
+     * @param $arguments
+     * @return static
+     * @throws \Exception
+     */
     public static function __callStatic($name, $arguments)
     {
         $states = static::enumerate();
@@ -36,9 +62,15 @@ abstract class Enum
 
         $value = $states[$name];
 
-        return new static($value, $name, $states);
+        return new static($value, $name);
     }
 
+    /**
+     * @param $name
+     * @param $arguments
+     * @return bool
+     * @throws \Exception
+     */
     public function __call($name, $arguments)
     {
         if (strpos($name, 'is') === 0) {

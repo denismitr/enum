@@ -45,6 +45,16 @@ $this->assertTrue($pending->isPending());
 $this->assertFalse($pending->isCanceled());
 ```
 
+### Instantiate from key
+```php
+$beingDelivered = OrderStatus::fromKey('BEING_DELIVERED');
+```
+
+### Instantiate from key
+```php
+$completed = OrderStatus::fromValue(2);
+```
+
 ### Enumerate all
 ```php
 OrderStatus::enumerate(); 

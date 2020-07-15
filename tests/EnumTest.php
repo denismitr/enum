@@ -53,6 +53,32 @@ class EnumTest extends TestCase
     /**
      * @test
      */
+    public function it_can_be_instantiated_from_key()
+    {
+        $beingDelivered = OrderStatus::fromKey('BEING_DELIVERED');
+        $this->assertInstanceOf(OrderStatus::class, $beingDelivered);
+        $this->assertEquals(4, $beingDelivered->value());
+        $this->assertEquals('BEING_DELIVERED', $beingDelivered->key());
+        $this->assertTrue($beingDelivered->isBeingDelivered());
+        $this->assertFalse($beingDelivered->isPending());
+    }
+
+    /**
+     * @test
+     */
+    public function it_can_be_instantiated_from_value()
+    {
+        $completed = OrderStatus::fromValue(2);
+        $this->assertInstanceOf(OrderStatus::class, $completed);
+        $this->assertEquals(2, $completed->value());
+        $this->assertEquals('COMPLETED', $completed->key());
+        $this->assertTrue($completed->isCompleted());
+        $this->assertFalse($completed->isPending());
+    }
+
+    /**
+     * @test
+     */
     public function it_can_enumerate_itself()
     {
         $enumerate = OrderStatus::enumerate();
