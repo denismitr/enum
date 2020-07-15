@@ -45,6 +45,17 @@ $this->assertTrue($pending->isPending());
 $this->assertFalse($pending->isCanceled());
 ```
 
+### Enumerate all
+```php
+OrderStatus::enumerate(); 
+// [
+//    'PENDING' => 1,
+//    'COMPLETED' => 2,
+//    'CANCELED' => 3,
+//    'BEING_DELIVERED' => 4,
+// ];
+```
+
 ### Validate values and keys
 ```php
 OrderStatus::isValidKey('PENDING'); // true
@@ -58,10 +69,14 @@ OrderStatus::isValidValue(5); // false
 ### Extract keys or values
 
 ```php
+// all keys
 OrderStatus::keys(); // ['PENDING', 'COMPLETED', 'CANCELED', 'BEING_DELIVERED']
+// all keys except except PENDING and CANCELED
 OrderStatus::keys(OrderStatus::PENDING(), OrderStatus::CANCELED()); // ['COMPLETED', 'BEING_DELIVERED']
 
+// all values
 OrderStatus::values(); // [1,2,3,4]
+// all values except PENDING and CANCELED
 OrderStatus::values(OrderStatus::PENDING(), OrderStatus::CANCELED()); // [2,4]
 ```
 
