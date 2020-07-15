@@ -1,10 +1,13 @@
 # PHP ENUMS
 
-## WIP
+## Beta version
 
-### Example
+## Install
+```composer require denismitr/enum```
 
-Create your enum
+## Examples
+
+### Create your enum
 
 ```php
 use Denismitr\Enum\Enum;
