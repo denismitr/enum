@@ -5,7 +5,11 @@ declare(strict_types=1);
 namespace Denismitr\Enum\Tests;
 
 
+use Denismitr\Enum\Exceptions\EnumIsDeclaredIncorrectly;
+use Denismitr\Enum\Tests\Stubs\Invalid;
+use Denismitr\Enum\Tests\Stubs\Iota;
 use Denismitr\Enum\Tests\Stubs\OrderStatus;
+use Denismitr\Enum\Tests\Stubs\OrderStatusCopy;
 use PHPUnit\Framework\TestCase;
 
 class EnumTest extends TestCase
@@ -19,7 +23,9 @@ class EnumTest extends TestCase
 
         $this->assertInstanceOf(OrderStatus::class, $pending);
         $this->assertEquals(1, $pending->value());
+        $this->assertTrue($pending->hasValue(1));
         $this->assertEquals('PENDING', $pending->key());
+        $this->assertTrue($pending->hasKey('PENDING'));
         $this->assertTrue($pending->isPending());
 
         $completed = OrderStatus::COMPLETED();
@@ -48,6 +54,9 @@ class EnumTest extends TestCase
         $this->assertFalse($delivering->isPending());
         $this->assertFalse($delivering->isCompleted());
         $this->assertFalse($delivering->isCanceled());
+
+        $this->assertFalse($delivering->is($pending));
+        $this->assertTrue($delivering->is(OrderStatus::BEING_DELIVERED()));
     }
 
     /**
@@ -130,6 +139,43 @@ class EnumTest extends TestCase
         $this->assertEquals([1,2,3,4], $values);
         $this->assertEquals([2,4], $valuesExceptSome);
     }
+    
+    /**
+     * @test
+     */
+    public function two_different_enums_with_equal_values_are_never_equal()
+    {
+        $pendingA = OrderStatus::PENDING();
+        $pendingB = OrderStatusCopy::PENDING();
+
+        $this->assertFalse($pendingA->is($pendingB));
+        $this->assertTrue($pendingA->hasKey($pendingB->key()));
+        $this->assertTrue($pendingA->hasValue($pendingB->value()));
+    }
+    
+    /**
+     * @test
+     */
+    public function non_associative_states_work_like_iota()
+    {
+        $ready = Iota::READY();
+        $this->assertEquals(1, $ready->value());
+        $this->assertEquals('READY', $ready->key());
+
+        $pending = Iota::PENDING();
+        $this->assertEquals(0, $pending->value());
+        $this->assertEquals('PENDING', $pending->key());
+
+        $failed = Iota::FAILED();
+        $this->assertEquals(2, $failed->value());
+        $this->assertEquals('FAILED', $failed->key());
+
+        $this->assertEquals([
+            'PENDING' => 0,
+            'READY' => 1,
+            'FAILED' => 2,
+        ], Iota::enumerate());
+    }
 
     /**
      * @test
@@ -138,5 +184,14 @@ class EnumTest extends TestCase
     {
         $this->expectException(\Exception::class);
         OrderStatus::FOO();
+    }
+
+    /**
+     * @test
+     */
+    public function it_throws_if_it_has_numeric_keys()
+    {
+        $this->expectException(EnumIsDeclaredIncorrectly::class);
+        Invalid::FOOBAR();
     }
 }

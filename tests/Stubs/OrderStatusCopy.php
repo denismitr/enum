@@ -8,17 +8,17 @@ namespace Denismitr\Enum\Tests\Stubs;
 use Denismitr\Enum\Enum;
 
 /**
- * @method static OrderStatus PENDING
- * @method static OrderStatus COMPLETED
- * @method static OrderStatus CANCELED
- * @method static OrderStatus BEING_DELIVERED
+ * @method static OrderStatusCopy PENDING
+ * @method static OrderStatusCopy COMPLETED
+ * @method static OrderStatusCopy CANCELED
+ * @method static OrderStatusCopy BEING_DELIVERED
  *
  * @method bool isPending()
  * @method bool isCompleted()
  * @method bool isCanceled()
  * @method bool isBeingDelivered()
  */
-class OrderStatus extends Enum
+class OrderStatusCopy extends Enum
 {
     protected static function states(): array
     {

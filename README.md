@@ -1,7 +1,5 @@
 # PHP ENUMS
 
-## Beta version
-
 ## Install
 ```composer require denismitr/enum```
 
@@ -24,7 +22,7 @@ use Denismitr\Enum\Enum;
  */
 class OrderStatus extends Enum
 {
-    public static function enumerate(): array
+    protected static function states(): array
     {
         return [
             'PENDING' => 1,
@@ -91,6 +89,44 @@ OrderStatus::keys(OrderStatus::PENDING(), OrderStatus::CANCELED()); // ['COMPLET
 OrderStatus::values(); // [1,2,3,4]
 // all values except PENDING and CANCELED
 OrderStatus::values(OrderStatus::PENDING(), OrderStatus::CANCELED()); // [2,4]
+```
+
+## Non associative states
+```php
+/**
+ * @method static IOTA PENDING
+ * @method static IOTA READY
+ * @method static IOTA FAILED
+ *
+ * @method bool isPending()
+ * @method bool isReady()
+ * @method bool isFailed()
+ */
+class Iota extends Enum
+{
+    protected static function states(): array
+    {
+        return ['PENDING', 'READY', 'FAILED'];
+    }
+}
+
+$ready = Iota::READY();
+$this->assertEquals(1, $ready->value());
+$this->assertEquals('READY', $ready->key());
+
+$pending = Iota::PENDING();
+$this->assertEquals(0, $pending->value());
+$this->assertEquals('PENDING', $pending->key());
+
+$failed = Iota::FAILED();
+$this->assertEquals(2, $failed->value());
+$this->assertEquals('FAILED', $failed->key());
+
+$this->assertEquals([
+    'PENDING' => 0,
+    'READY' => 1,
+    'FAILED' => 2,
+], Iota::enumerate());
 ```
 
 
